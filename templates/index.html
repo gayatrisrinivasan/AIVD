@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Violation Dashboard</title>
+</head>
+<body>
+    <h1>Traffic Violation Detection</h1>
+
+    <!-- Upload Form -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Upload & Detect</button>
+    </form>
+
+    <h2>Detected Violations</h2>
+    <div>
+        {% for file in files %}
+            <img src="{{ url_for('get_violation_image', filename=file) }}" width="300">
+        {% endfor %}
+    </div>
+</body>
+</html>
