@@ -1,5 +1,10 @@
 # AI-Powered Traffic Violation Detection
 
+### Install required libraries
+```bash
+pip install -r requirements.txt
+```
+---
 ## How to Run
 
 ### 1. Extract Frames from Video
