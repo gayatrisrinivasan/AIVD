@@ -1,24 +1,39 @@
-# AI-Powered Traffic Violation Detection  
+# AI-Powered Traffic Violation Detection
 
-This project detects traffic violations such as helmet violations, overloading, and wrong-way driving using YOLOv5.  
+### Install required libraries
+```bash
+pip install -r requirements.txt
+```
+---
+## How to Run
 
-## Setup  
+### 1. Extract Frames from Video
+```bash
+python extract_frames.py
+```
 
-1. Clone the repository:  
-   ```bash
-   git clone https://github.com/gayatrisrinivasan/aivd.git
-   cd aivd
-   ```  
-2. Install dependencies:  
-   ```bash
-   pip install -r requirements.txt
-   ```  
+### 2. Preprocess Frames
+```bash
+python preprocess.py
+```
 
-## Usage  
+### 3. Detect Region of Interest
+```bash
+python roi_detection.py
+```
 
-1. Place your traffic video in the **uploads/** folder.  
-2. Run the detection script:  
-   ```bash
-   python violation_detection.py
-   ```  
-3. The results will be saved in the **violations/** folder.  
+### 4. Run Violation Detection on an Image
+```bash
+python violation_detection.py --image uploads/image.jpg
+```
+*Replace `image.jpg` with your image name.*
+
+### 5. Run the Web App (if applicable)
+```bash
+python server.py
+```
+
+## What Violations are Detected?
+- **Helmet Violation** → Detects if a rider is not wearing a helmet.
+- **Overloading Violation** → Detects if more than two people are on a motorcycle.
+- **Wrong-Way Violation** → Future implementation (detects vehicles moving in the wrong direction).
