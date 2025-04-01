@@ -1,13 +1,13 @@
 import cv2
 import torch
 import numpy as np
+import os
 
 # Load YOLOv5 model
 model = torch.hub.load("ultralytics/yolov5", "yolov5s", pretrained=True)
 
 # Define classes for detection
 PERSON_CLASS = 0  # YOLOv5 class for 'person'
-HELMET_CLASS = 26  # Custom trained model for 'helmet'
 MOTORCYCLE_CLASS = 3  # YOLOv5 class for 'motorcycle'
 
 def detect_violations(image_path):
@@ -17,7 +17,6 @@ def detect_violations(image_path):
     results = model(img)
     
     persons = []
-    helmets = []
     motorcycles = []
 
     # Process detections
@@ -27,43 +26,33 @@ def detect_violations(image_path):
 
         if class_id == PERSON_CLASS:
             persons.append((x1, y1, x2, y2))
-        elif class_id == HELMET_CLASS:
-            helmets.append((x1, y1, x2, y2))
         elif class_id == MOTORCYCLE_CLASS:
             motorcycles.append((x1, y1, x2, y2))
 
-    # Helmet Violation Check
-    helmet_violation = False
-    for person in persons:
-        x1_p, y1_p, x2_p, y2_p = person
-        has_helmet = any(x1_h < x1_p and x2_h > x2_p for x1_h, y1_h, x2_h, y2_h in helmets)
-        if not has_helmet:
-            helmet_violation = True
-            cv2.putText(img, "NO HELMET!", (x1_p, y1_p - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-
-    # Overloading Violation Check
-    overloading_violation = len(persons) > 2  # More than 2 persons on a motorcycle
-
-    # Wrong-Way Detection (Basic implementation)
-    wrong_way_violation = False  # Future Implementation - Analyze vehicle direction
+    # Overloading Violation Check (More than 2 persons on a motorcycle)
+    overloading_violation = len(persons) > 2
 
     # Draw bounding boxes
     for (x1, y1, x2, y2) in persons:
         cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 2)  # Blue for person
-    for (x1, y1, x2, y2) in helmets:
-        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Green for helmet
     for (x1, y1, x2, y2) in motorcycles:
         cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 255), 2)  # Yellow for motorcycle
 
     # Display results
-    if helmet_violation:
-        print("Helmet Violation Detected!")
     if overloading_violation:
         print("Overloading Violation Detected!")
-    if wrong_way_violation:
-        print("Wrong-Way Violation Detected!")
+        cv2.putText(img, "Overloading!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-    # Save result
-    output_path = "violations/" + image_path.split("/")[-1]
+    # Ensure the violations folder exists
+    output_dir = "violations"
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Save the processed image
+    output_path = os.path.join(output_dir, os.path.basename(image_path))
     cv2.imwrite(output_path, img)
+
     print(f"Saved result to {output_path}")
+
+# Example usage
+image_path = "uploads/example.jpg"  # Change this to your uploaded image
+detect_violations(image_path)
