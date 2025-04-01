@@ -24,13 +24,7 @@ python roi_detection.py
 
 ### 4. Run Violation Detection on an Image
 ```bash
-python violation_detection.py --image uploads/image.jpg
-```
-*Replace `image.jpg` with your image name.*
-
-### 5. Run the Web App (if applicable)
-```bash
-python server.py
+python violation_detection.py --image uploads/example.jpg
 ```
 
 ## What Violations are Detected?
